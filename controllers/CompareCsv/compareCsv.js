@@ -67,15 +67,15 @@ const compareCsv = async (req, res) => {
     // console.log("file name" ,secondFilePath, "secondInputFileName")
     const f1 = await csvToJson(firstFilePath);
 
-    f1.splice(0, 1);
+    // f1.splice(0, 1);
     const f2 = await csvToJson(secondFilePath);
-    console.log(f2[0])
-    f2.splice(0, 1);
+    // console.log(f2[0])
+    // f2.splice(1, 1);
     // const f2 = file2.splice(1, 1);
     // console.log(primaryKey, "primary key");
-    console.log(f2.length,f1.length);
+    console.log(f2.length, f1.length);
 
-    
+
     const diff = [];
 
     // Logging for debugging
@@ -84,8 +84,9 @@ const compareCsv = async (req, res) => {
     // console.log(f1,"f1")
     for (let i = 0; i < f1.length; i++) {
       // console.log(isBlank(str))
-  
+
       if (isBlank(f1[i][primaryKey])) {
+
         return res
           .status(501)
           .send({ err: "Primary key cannot be blank in the first CSV file" });
@@ -95,7 +96,7 @@ const compareCsv = async (req, res) => {
     for (let j = 0; j < f2.length; j++) {
 
       if (isBlank(f2[j][primaryKey])) {
-        // console.log(f2[j])
+        console.log(f2[j])
         return res
           .status(501)
           .send({ err: "Primary key cannot be blank in the second CSV file" });
@@ -156,10 +157,17 @@ const compareCsv = async (req, res) => {
         }
       }
     }
+    // console.log(diff)
+    // console.log(f1)
+    if (diff.length === 0) {
+      return res
+        .status(501)
+        .send({ err: "No Error Found" });
+    }
 
     const csvData = parse(diff);
     const correctedCsv = parse(f1);
-
+    // return
     const directoryPath = path.join(
       __dirname,
       "../",
@@ -223,8 +231,8 @@ const compareCsv = async (req, res) => {
       errorFilePath: errorFilePath,
       correctedFilePath: correctionFilePath,
       imageDirectoryName: zipImageFile,
-      file1:f1,
-      file2:f2
+      file1: f1,
+      file2: f2
     });
   } catch (err) {
     res.status(501).send({ error: err.message });
@@ -232,4 +240,3 @@ const compareCsv = async (req, res) => {
 };
 
 module.exports = compareCsv;
-  
